@@ -106,9 +106,41 @@ fs.createReadStream(dir)
 // Set up front end
 app.use('/', express.static('static'));
 
+// Get all tracks
 app.get('/tracks/all', (req, res) => {
     console.log(`GET request for ${req.url}`);
     res.send(tracks);
+});
+
+// Get all genres
+app.get('/genres/all', (req, res) => {
+    console.log(`GET request for ${req.url}`);
+    res.send(genres);
+});
+
+// Get all artist
+app.get('/artists/all', (req, res) => {
+    console.log(`GET request for ${req.url}`);
+    res.send(artists);
+});
+
+// Get specific artist ID by artist name
+app.get('/artists/:artist_name', (req, res) => {
+    const name = req.params.artist_name;
+    console.log(`GET request for ${req.url}`);
+    
+    let results = [];
+    for (i = 0; i < artists.length; i++) {
+        if ((artists[i]['artist_name']).toLowerCase().includes(name.toLowerCase())) {
+            results.push(artists[i]['artist_id']);
+        }
+    }
+    if (results.length > 0) {
+        res.send(results);
+    }
+    else {
+        res.status(404).send(`${name} was not found!`);
+    } 
 });
 
 app.listen(port, () => {
