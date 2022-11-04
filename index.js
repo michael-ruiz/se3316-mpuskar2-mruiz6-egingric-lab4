@@ -106,25 +106,68 @@ fs.createReadStream(dir)
 // Set up front end
 app.use('/', express.static('static'));
 
-// Get all tracks
-app.get('/tracks/all', (req, res) => {
-    console.log(`GET request for ${req.url}`);
-    res.send(tracks);
-});
-
 // Get all genres
 app.get('/genres/all', (req, res) => {
     console.log(`GET request for ${req.url}`);
     res.send(genres);
 });
 
-// Get all artist
-app.get('/artists/all', (req, res) => {
+// Get artist by artist ID
+app.get('/artists/id/:artist_id', (req, res) => {
+    const id = req.params.artist_id;
     console.log(`GET request for ${req.url}`);
-    res.send(artists);
+    
+    let results = artists.find(i => i.artist_id === String(id));
+
+    if (results) {
+        res.send(results);
+    }
+    else {
+        res.status(404).send(`Artist ${id} was not found!`);
+    } 
 });
 
-// Get specific artist ID by artist name
+// Get track by track ID
+app.get('/tracks/id/:track_id', (req, res) => {
+    const id = req.params.track_id;
+    console.log(`GET request for ${req.url}`);
+    
+    let results = tracks.find(i => i.track_id === String(id));
+
+    if (results) {
+        res.send(results);
+    }
+    else {
+        res.status(404).send(`Track ${id} was not found!`);
+    } 
+});
+
+// Get track ID by track title or album title (max 10 results)
+app.get('/tracks/:search', (req, res) => {
+    const search = req.params.search;
+    let n = 10; // Allow at most 10 results
+    console.log(`GET request for ${req.url}`);
+    
+    let results = [];
+    for (i = 0; i < tracks.length; i++) {
+        if ((tracks[i]['track_title']).toLowerCase().includes(search.toLowerCase()) || (tracks[i]['album_title']).toLowerCase().includes(search.toLowerCase())) {
+            results.push(tracks[i]['track_id']);
+            n -= 1;
+        }
+        if (n <= 0) {
+            break;
+        }
+    }
+
+    if (results.length > 0) {
+        res.send(results);
+    }
+    else {
+        res.status(404).send(`${search} was not found!`);
+    } 
+});
+
+// Get artist ID by artist name
 app.get('/artists/:artist_name', (req, res) => {
     const name = req.params.artist_name;
     console.log(`GET request for ${req.url}`);
