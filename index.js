@@ -193,14 +193,8 @@ app.get('/artists/:artist_name', (req, res) => {
     } 
 });
 
-
-let testList = [
-    {"name": "list1", "tracks": ["1","1000","100"]},
-    {"name": "list2", "tracks": ["1"]}
-];
-
 // Create a new list of tracks b6
-app.put('/lists/new/:list_name', (req, res) => {
+app.put('/lists/:list_name', (req, res) => {
     const name = req.params.list_name;
     const newList = req.body;
     console.log(`PUT request for ${req.url}`);
@@ -220,12 +214,33 @@ app.put('/lists/new/:list_name', (req, res) => {
     }
     else {
         res.status(404).send(`List ${name} already exists!`);
-        //console.log("Modify ", name)
-        //db[results] = newList;
     }
 });
 
 // Save tracks to a list, replace tracks in existing list b7
+app.post('/lists/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    const newList = req.body;
+    console.log(`POST request for ${req.url}`);
+
+    newList.name = String(name);
+
+    let results = db.findIndex(i => i.name === String(name));
+    if (results < 0) {
+        res.status(404).send(`List ${name} does not exist!`);
+    }
+    else {
+        console.log("Modify ", name)
+        db[results] = newList;
+
+        fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
+            if (err) throw err;
+            console.log("Done writing to file");
+        });
+
+        res.send(newList);
+    }
+});
 
 // Get list of track IDs with name of list b8
 app.get('/lists/:list_name', (req, res) => {
@@ -242,19 +257,62 @@ app.get('/lists/:list_name', (req, res) => {
     }
 });
 
+// Delete a list of tracks b9
+app.delete('/lists/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    console.log(`DELETE request for ${req.url}`);
+
+    let results = db.findIndex(i => i.name === String(name));
+    if (results < 0) {
+        res.status(404).send(`List ${name} does not exist!`);
+    }
+    else {
+        console.log("Delete ", name);
+        db.splice(results, 1); // Remove the item
+        fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
+            if (err) throw err;
+            console.log("Done writing to file");
+        });
+
+        res.send(`List ${name} deleted!`);
+    }
+});
+
 // Get all list names, number of tracks in each and total play time b10
 app.get('/lists/all/lists', (req, res) => {
-    const testFolder = './';
-    
-    fs.readdir(testFolder, (err, files) => {
-      files.forEach(file => {
-        console.log(file);
+    console.log(`GET request for ${req.url}`);
 
-      });
-    });
+    let results = [];
 
+    for (i = 0; i < db.length; i++){
+        let trackArray = db[i].tracks;
+        let runtime = 0;
+
+        for (j = 0; j < trackArray.length; j++) {
+            let trackID = trackArray[j];
+            let track = tracks.find(i => i.track_id === String(trackID));
+            if (track){ // If the ID does not exist then don't add to runtime
+                let trackDur = track.track_duration;
+                runtime += convertMinToSec(trackDur);
+            }
+        }
+
+        let obj = {
+            "name": db[i].name,
+            "length": trackArray.length,
+            "runtime": runtime
+        }
+        results.push(obj);
+    }
+
+    res.send(results);
 });
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
+
+function convertMinToSec (min) {
+    let arr = min.split(":");
+    return parseInt(arr[0] * 60) + parseInt(arr[1]);
+}
