@@ -1,13 +1,20 @@
+// Constants and imports
 const fs = require('fs');
 const csv = require('csv-parser');
 const express = require('express');
 const app = express();
 const port = 3000;
+const router = express.Router();
 
 var genres = [];
 var tracks = [];
 var artists = [];
 
+app.use('/', router);
+router.use(express.json());
+
+// Database file
+let db = require("./data/lists.json");
 
 fs.createReadStream('lab3-data/genres.csv')
     .pipe(csv())
@@ -106,13 +113,13 @@ fs.createReadStream(dir)
 // Set up front end
 app.use('/', express.static('static'));
 
-// Get all genres
+// Get all genres b1
 app.get('/genres/all', (req, res) => {
     console.log(`GET request for ${req.url}`);
     res.send(genres);
 });
 
-// Get artist by artist ID
+// Get artist by artist ID b2
 app.get('/artists/id/:artist_id', (req, res) => {
     const id = req.params.artist_id;
     console.log(`GET request for ${req.url}`);
@@ -127,7 +134,7 @@ app.get('/artists/id/:artist_id', (req, res) => {
     } 
 });
 
-// Get track by track ID
+// Get track by track ID b3
 app.get('/tracks/id/:track_id', (req, res) => {
     const id = req.params.track_id;
     console.log(`GET request for ${req.url}`);
@@ -142,7 +149,7 @@ app.get('/tracks/id/:track_id', (req, res) => {
     } 
 });
 
-// Get track ID by track title or album title (max 10 results)
+// Get track ID by track title or album title (max 10 results) b4
 app.get('/tracks/:search', (req, res) => {
     const search = req.params.search;
     let n = 10; // Allow at most 10 results
@@ -167,7 +174,7 @@ app.get('/tracks/:search', (req, res) => {
     } 
 });
 
-// Get artist ID by artist name
+// Get artist ID by artist name b5
 app.get('/artists/:artist_name', (req, res) => {
     const name = req.params.artist_name;
     console.log(`GET request for ${req.url}`);
@@ -184,6 +191,68 @@ app.get('/artists/:artist_name', (req, res) => {
     else {
         res.status(404).send(`${name} was not found!`);
     } 
+});
+
+
+let testList = [
+    {"name": "list1", "tracks": ["1","1000","100"]},
+    {"name": "list2", "tracks": ["1"]}
+];
+
+// Create a new list of tracks b6
+app.put('/lists/new/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    const newList = req.body;
+    console.log(`PUT request for ${req.url}`);
+
+    newList.name = String(name);
+
+    let results = db.findIndex(i => i.name === String(name));
+    if (results < 0) {
+        console.log("Make a new list");
+        db.push(newList);
+
+        fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
+            if (err) throw err;
+            console.log("Done writing to file");
+        });
+        res.send(newList);
+    }
+    else {
+        res.status(404).send(`List ${name} already exists!`);
+        //console.log("Modify ", name)
+        //db[results] = newList;
+    }
+});
+
+// Save tracks to a list, replace tracks in existing list b7
+
+// Get list of track IDs with name of list b8
+app.get('/lists/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    console.log(`GET request for ${req.url}`);
+    
+    let results = db.find(i => i.name === String(name));
+
+    if (results) {
+        res.send(results.tracks);
+    }
+    else {
+        res.status(404).send(`List ${name} was not found!`);
+    }
+});
+
+// Get all list names, number of tracks in each and total play time b10
+app.get('/lists/all/lists', (req, res) => {
+    const testFolder = './';
+    
+    fs.readdir(testFolder, (err, files) => {
+      files.forEach(file => {
+        console.log(file);
+
+      });
+    });
+
 });
 
 app.listen(port, () => {
