@@ -5,8 +5,27 @@
 
         <title>Music</title>
     </head>
-<body>
-    <h1>SE 3316 Lab 3</h1>
-    <p>Hello World!</p>
-</body>
+    <body>
+        <h1>Music</h1>
+        <div class="buttons">
+            <input id="trackName" type="text" placeholder="Track Name">
+            <button id="trackNS">Search</button>
+            <input id="artistName" type="text" placeholder="Artist Name">
+            <button id="artistNS">Search</button>
+            <input id="albumName" type="text" placeholder="Album Name">
+            <button id="albumNS">Search</button>
+        </div>
+        <div>
+            <ol id="test"></ol>
+            <table id="trackSearchTable" style="width:100%">
+                <tr>
+                    <th>Track Name</th>
+                    <th>Album Name</th>
+                    <th>Artist Name</th>
+                    <th>Runtime</th>
+                </tr>
+            </table>
+        </div>
+        <script defer src="script.js"></script>
+    </body>
 </html>
