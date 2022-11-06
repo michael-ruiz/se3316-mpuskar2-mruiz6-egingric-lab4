@@ -345,7 +345,13 @@ app.get('/lists/all/lists', (req, res) => {
             }
         }
 
-        let runtimeStr = `${Math.floor(runtime/60)}:${runtime%60}`; 
+        let runtimeStr;
+        if (runtime%60 < 10){
+            runtimeStr = `${Math.floor(runtime/60)}:0${runtime%60}`;
+        }
+        else {
+            runtimeStr = `${Math.floor(runtime/60)}:${runtime%60}`;
+        }
 
         let obj = {
             "name": db[i].name,
