@@ -297,10 +297,12 @@ app.get('/lists/all/lists', (req, res) => {
             }
         }
 
+        let runtimeStr = `${Math.floor(runtime/60)}:${runtime%60}`; 
+
         let obj = {
             "name": db[i].name,
             "length": trackArray.length,
-            "runtime": runtime
+            "runtime": runtimeStr
         }
         results.push(obj);
     }

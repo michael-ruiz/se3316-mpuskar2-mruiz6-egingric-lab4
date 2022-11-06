@@ -1,6 +1,9 @@
 document.getElementById('trackNS').addEventListener('click', trackNameSearch);
 document.getElementById('albumNS').addEventListener('click', albumNameSearch);
 document.getElementById('createNewList').addEventListener('click', createList);
+document.getElementById('updateList').addEventListener('click', updateList);
+document.getElementById('deleteList').addEventListener('click', deleteList);
+document.getElementById('showAllLists').addEventListener('click', getAllLists);
 
 function trackNameSearch() {
     let trackName = document.getElementById('trackName');
@@ -41,6 +44,10 @@ function albumNameSearch() {
 function getTrackData(textField) {
     let path = '/tracks/' + textField;
 
+    while (document.getElementById("trackSearchTable").firstChild) {
+        document.getElementById("trackSearchTable").removeChild(document.getElementById("trackSearchTable").lastChild);
+    }
+
     fetch(path)
     .then(res => res.json()
     .then(data => {
@@ -50,20 +57,22 @@ function getTrackData(textField) {
             fetch(path2)
             .then(response => response.json()
             .then(data2 => {
-                console.log(data2);
 
                 let table = document.getElementById('trackSearchTable');
                 let row = document.createElement('tr');
+                let tid = document.createElement('td');
                 let tn = document.createElement('td');
                 let an = document.createElement('td');
                 let arn = document.createElement('td');
                 let rt = document.createElement('td');
 
+                tid.innerText = data2.track_id;
                 tn.innerText = data2.track_title;
                 an.innerText = data2.album_title;
                 arn.innerText = data2.artist_name;
                 rt.innerText = data2.track_duration;
 
+                row.appendChild(tid);
                 row.appendChild(tn);
                 row.appendChild(an);
                 row.appendChild(arn);
@@ -102,8 +111,6 @@ function createList() {
         trackArray = trackIdsTxt.split(",");
     }
 
-    console.log(trackArray);
-
     let newList = {
         tracks: trackArray
     }
@@ -121,8 +128,119 @@ function createList() {
             .catch(err => 'Failed to get json object')
         }
         else {
+            alert("List already exists!");
             console.log('Error:', res.status);
         }
     })
     .catch()
+}
+
+function updateList() {
+    let listName = document.getElementById('listName2');
+    let filterName = listName.value;
+    let trackIds = document.getElementById('trackIds2');
+    let trackIdsTxt = trackIds.value;
+
+    // Don't create list if list name box is empty
+    if (filterName == ""){
+        return;
+    }
+
+    // Ensure that the list name input is no more than 20 characters
+    if ((filterName.length > 20)) {
+        listName.value = "";
+        return;
+    }
+
+    let trackArray = [];
+    if (trackIdsTxt != ""){
+        trackArray = trackIdsTxt.split(",");
+    }
+
+    let newList = {
+        tracks: trackArray
+    }
+
+    let path = '/lists/' + filterName;
+    fetch(path, {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(newList)
+    })
+    .then(res => {
+        if (res.ok) {
+            res.json()
+            .then()
+            .catch(err => 'Failed to get json object')
+        }
+        else {
+            alert("List does not exist!");
+            console.log('Error:', res.status);
+        }
+    })
+    .catch()
+}
+
+function deleteList() {
+    let listName = document.getElementById('listName3');
+    let filterName = listName.value;
+
+    // Don't create list if list name box is empty
+    if (filterName == ""){
+        return;
+    }
+
+    // Ensure that the list name input is no more than 20 characters
+    if ((filterName.length > 20)) {
+        listName.value = "";
+        return;
+    }
+
+    let path = '/lists/' + filterName;
+    fetch(path, {
+        method: 'DELETE',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify()
+    })
+    .then(res => {
+        if (res.ok) {
+            res.json()
+            .then()
+            .catch(err => 'Failed to get json object')
+        }
+        else {
+            alert("List does not exist!");
+            console.log('Error:', res.status);
+        }
+    })
+    .catch()
+}
+
+function getAllLists() {
+    while (document.getElementById("listTable").firstChild) {
+        document.getElementById("listTable").removeChild(document.getElementById("listTable").lastChild);
+    }
+
+    fetch('/lists/all/lists')
+    .then(res => res.json()
+    .then(data => {
+        console.log(data);
+        data.forEach(e => {
+            let table = document.getElementById('listTable');
+            let row = document.createElement('tr');
+            let nm = document.createElement('td');
+            let lg = document.createElement('td');
+            let rt = document.createElement('td');
+
+            nm.innerText = e.name;
+            lg.innerText = e.length;
+            rt.innerText = e.runtime;
+
+            row.appendChild(nm);
+            row.appendChild(lg);
+            row.appendChild(rt);
+            table.appendChild(row);
+        })
+    })
+    )
 }

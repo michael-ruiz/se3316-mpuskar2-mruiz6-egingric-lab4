@@ -8,6 +8,7 @@
     <body>
         <h1>Music</h1>
         <div class="buttons">
+            <h3>Search Tracks</h3>
             <input id="trackName" type="text" placeholder="Track Name">
             <button id="trackNS">Search</button>
             <input id="artistName" type="text" placeholder="Artist Name">
@@ -16,8 +17,9 @@
             <button id="albumNS">Search</button>
         </div>
         <div id="trackSearchDiv">
-            <table id="trackSearchTable" style="width:100%">
+            <table id="trackSearchTable">
                 <tr>
+                    <th>Track ID</th>
                     <th>Track Name</th>
                     <th>Album Name</th>
                     <th>Artist Name</th>
@@ -26,9 +28,34 @@
             </table>
         </div>
         <div>
+            <h3>Create List</h3>
             <input id="listName" type="text" placeholder="List Name">
             <input id="trackIds" type="text" placeholder="Track IDs">
             <button id="createNewList">Create List</button>
+        </div>
+        <div>
+            <h3>Update List</h3>
+            <input id="listName2" type="text" placeholder="List Name">
+            <input id="trackIds2" type="text" placeholder="Track IDs">
+            <button id="updateList">Update List</button>
+        </div>
+        <div>
+            <h3>Delete List</h3>
+            <input id="listName3" type="text" placeholder="List Name">
+            <button id="deleteList">Delete List</button>
+        </div>
+        <div>
+            <h3>Lists</h3>
+            <button id="showAllLists">Show All Lists</button>
+        </div>
+        <div>
+            <table id="listTable">
+                <tr>
+                    <th>List Name</th>
+                    <th>Number of Tracks</th>
+                    <th>Play Time</th>
+                </tr>
+            </table>
         </div>
         <script defer src="script.js"></script>
     </body>
