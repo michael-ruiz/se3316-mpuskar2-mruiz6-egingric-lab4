@@ -44,8 +44,9 @@ function albumNameSearch() {
 function getTrackData(textField) {
     let path = '/tracks/' + textField;
 
-    while (document.getElementById("trackSearchTable").firstChild) {
-        document.getElementById("trackSearchTable").removeChild(document.getElementById("trackSearchTable").lastChild);
+    let rowCount = document.getElementById("trackSearchTable").rows.length;
+    for (i = rowCount - 1; i > 0; i--) {
+        document.getElementById("trackSearchTable").deleteRow(i);
     }
 
     fetch(path)
@@ -217,8 +218,9 @@ function deleteList() {
 }
 
 function getAllLists() {
-    while (document.getElementById("listTable").firstChild) {
-        document.getElementById("listTable").removeChild(document.getElementById("listTable").lastChild);
+    let rowCount = document.getElementById("listTable").rows.length;
+    for (i = rowCount - 1; i > 0; i--) {
+        document.getElementById("listTable").deleteRow(i);
     }
 
     fetch('/lists/all/lists')
