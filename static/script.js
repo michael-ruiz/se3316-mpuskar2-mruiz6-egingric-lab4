@@ -1,9 +1,11 @@
 document.getElementById('trackNS').addEventListener('click', trackNameSearch);
 document.getElementById('albumNS').addEventListener('click', albumNameSearch);
+document.getElementById('artistNS').addEventListener('click', artistNameSearch);
 document.getElementById('createNewList').addEventListener('click', createList);
 document.getElementById('updateList').addEventListener('click', updateList);
 document.getElementById('deleteList').addEventListener('click', deleteList);
 document.getElementById('showAllLists').addEventListener('click', getAllLists);
+document.getElementById('showAllListsDetailed').addEventListener('click', getAllListsDetailed);
 
 function trackNameSearch() {
     let trackName = document.getElementById('trackName');
@@ -20,7 +22,25 @@ function trackNameSearch() {
         return;
     }
 
-    getTrackData(filterName);
+    getTrackData('track', filterName);
+}
+
+function artistNameSearch() {
+    let artistName = document.getElementById('artistName');
+    let filterName = artistName.value.toLowerCase();
+
+    // Don't search if search bar is empty
+    if (filterName == ""){
+        return;
+    }
+
+    // Ensure that the search input is no more than 20 characters
+    if ((filterName.length > 20)) {
+        artistName.value = "";
+        return;
+    }
+
+    getTrackData('artist', filterName);
 }
 
 function albumNameSearch() {
@@ -38,11 +58,11 @@ function albumNameSearch() {
         return;
     }
 
-    getTrackData(filterName);
+    getTrackData('album', filterName);
 }
 
-function getTrackData(textField) {
-    let path = '/tracks/' + textField;
+function getTrackData(whichSearch, textField) {
+    let path = '/tracks/' + whichSearch + '/' + textField;
 
     let rowCount = document.getElementById("trackSearchTable").rows.length;
     for (i = rowCount - 1; i > 0; i--) {
@@ -245,4 +265,8 @@ function getAllLists() {
         })
     })
     )
+}
+
+function getAllListsDetailed() {
+
 }
