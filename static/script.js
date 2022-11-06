@@ -6,6 +6,7 @@ document.getElementById('updateList').addEventListener('click', updateList);
 document.getElementById('deleteList').addEventListener('click', deleteList);
 document.getElementById('showAllLists').addEventListener('click', getAllLists);
 document.getElementById('showAllListsDetailed').addEventListener('click', getAllListsDetailed);
+document.getElementById('genres').addEventListener('click', showGenres);
 
 function trackNameSearch() {
     let trackName = document.getElementById('trackName');
@@ -341,6 +342,45 @@ function getAllListsDetailed() {
                 })
             })
             )
+        })
+    })
+    )
+}
+
+function showGenres() {
+    let div = document.getElementById('genreDiv');
+    
+    if (div.style.display == "") {
+        div.style.display = "none";
+    }
+    else {
+        div.style.display = "";
+    }
+
+    let table = document.getElementById('genreTable');
+    let rowCount = document.getElementById("genreTable").rows.length;
+    for (i = rowCount - 1; i > 0; i--) {
+        table.deleteRow(i);
+    }
+
+    fetch('/genres/all')
+    .then(res => res.json()
+    .then(data => {
+        data.forEach(e => {
+
+            let row = document.createElement('tr');
+            let gn = document.createElement('td');
+            let gid = document.createElement('td');
+            let pid = document.createElement('td');
+
+            gn.innerText = e.title;
+            gid.innerText = e.genre_id;
+            pid.innerText = e.parent;
+
+            row.appendChild(gn);
+            row.appendChild(gid);
+            row.appendChild(pid);
+            table.appendChild(row);
         })
     })
     )
