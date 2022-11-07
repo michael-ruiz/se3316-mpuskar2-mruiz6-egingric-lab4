@@ -251,6 +251,15 @@ app.put('/lists/:list_name', (req, res) => {
 
     let results = db.findIndex(i => i.name === String(name));
     if (results < 0) {
+
+        for (i = 0; i < newList.tracks.length; i++) {
+            let results = tracks.find(j => j.track_id === String(newList.tracks[i]));
+            if (!results) {
+                res.status(404).send(`Track of ID ${newList.tracks[i]} does not exist!`);
+                return;
+            }
+        }
+
         console.log("Make a new list");
         db.push(newList);
 
@@ -278,7 +287,15 @@ app.post('/lists/:list_name', (req, res) => {
         res.status(404).send(`List ${name} does not exist!`);
     }
     else {
-        console.log("Modify ", name)
+        for (i = 0; i < newList.tracks.length; i++) {
+            let results = tracks.find(j => j.track_id === String(newList.tracks[i]));
+            if (!results) {
+                res.status(404).send(`Track of ID ${newList.tracks[i]} does not exist!`);
+                return;
+            }
+        }
+
+        console.log("Modify ", name);
         db[results] = newList;
 
         fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
