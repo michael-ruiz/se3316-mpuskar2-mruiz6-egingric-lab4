@@ -21,9 +21,6 @@ fs.createReadStream('lab3-data/genres.csv')
     .on('data', (rows) => {
         genres.push(rows);
     }).on('end', () => {
-        /*const result = genres.filter((row) => {
-            
-        })*/
         genres = genres.map((rows) => {
             return {
                 'genre_id':rows.genre_id,
@@ -31,17 +28,13 @@ fs.createReadStream('lab3-data/genres.csv')
                 'title':rows.title
             }
         })
-        //console.log(genres);
     });
 
-    fs.createReadStream('lab3-data/raw_tracks.csv')
+fs.createReadStream('lab3-data/raw_tracks.csv')
     .pipe(csv())
     .on('data', (rows) => {
         tracks.push(rows);
     }).on('end', () => {
-        /*const result = tracks.filter((row) => {
-            
-        })*/
         tracks = tracks.map((rows) => {
             return {
                 'track_id':rows.track_id,
@@ -58,18 +51,13 @@ fs.createReadStream('lab3-data/genres.csv')
                 'track_title':rows.track_title
             }
         })
-        //console.log(tracks);
     });
-
 
 fs.createReadStream('lab3-data/raw_artists.csv')
     .pipe(csv())
     .on('data', (rows) => {
         artists.push(rows);
     }).on('end', () => {
-        /*const result = artists.filter((row) => {
-            
-        })*/
         artists = artists.map((rows) => {
             return {
                 'artist_id':rows.artist_id,
@@ -81,34 +69,7 @@ fs.createReadStream('lab3-data/raw_artists.csv')
                 'artist_active_year_begin':rows.artist_active_year_begin
             }
         })
-        //console.log(artists);
     });
-
-/*
-function parseCsv (file) {
-let data = [];
-let dir = 'lab3-data/' + file + '.csv';
-fs.createReadStream(dir)
-    .pipe(csv())
-    .on('data', (rows) => {
-        data.push(rows);
-    }).on('end', () => {
-        const result = data.filter((row) => {
-            
-        })
-        console.log(data);
-    });
-
-    switch (fileName) {
-        case "genres":
-            let newData = results.map((data) => {
-
-            })
-    }
-    //let newData = 
-
-    //return data;
-}*/
 
 // Set up front end
 app.use('/', express.static('static'));
