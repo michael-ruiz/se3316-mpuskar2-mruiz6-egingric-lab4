@@ -122,9 +122,10 @@ function createList() {
         return;
     }
 
-    // Ensure that the list name input is no more than 20 characters
-    if ((filterName.length > 20)) {
+    // Ensure that the list name input is no more than 20 characters and that the ids don't contain letters
+    if ((filterName.length > 20) || containsLetter(trackIdsTxt)) {
         listName.value = "";
+        trackIds.value = "";
         return;
     }
 
@@ -150,7 +151,7 @@ function createList() {
             .catch(err => 'Failed to get json object')
         }
         else {
-            alert("List already exists!");
+            alert("Error! Check:\nYour list name\nYour track IDs are valid");
             console.log('Error:', res.status);
         }
     })
@@ -168,9 +169,10 @@ function updateList() {
         return;
     }
 
-    // Ensure that the list name input is no more than 20 characters
-    if ((filterName.length > 20)) {
+    // Ensure that the list name input is no more than 20 characters and that the ids don't contain letters
+    if ((filterName.length > 20) || containsLetter(trackIdsTxt)) {
         listName.value = "";
+        trackIds.value = "";
         return;
     }
 
@@ -196,7 +198,7 @@ function updateList() {
             .catch(err => 'Failed to get json object')
         }
         else {
-            alert("List does not exist!");
+            alert("Error! Check:\nIf your list exists\nYour track IDs are valid");
             console.log('Error:', res.status);
         }
     })
@@ -384,4 +386,8 @@ function showGenres() {
         })
     })
     )
+}
+
+function containsLetter(str) {
+    return ((/[a-z]/.test(str)) || (/[A-Z]/.test(str)));
 }

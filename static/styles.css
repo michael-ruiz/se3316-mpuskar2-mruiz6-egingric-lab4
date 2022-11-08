@@ -29,3 +29,8 @@ button {
     border-radius: 10px;
     border: 1px solid black;
 }
+
+p {
+    font-size: 12px;
+    margin-top: 1px;
+}
