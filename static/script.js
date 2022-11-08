@@ -7,6 +7,7 @@ document.getElementById('deleteList').addEventListener('click', deleteList);
 document.getElementById('showAllLists').addEventListener('click', getAllLists);
 document.getElementById('showAllListsDetailed').addEventListener('click', getAllListsDetailed);
 document.getElementById('genres').addEventListener('click', showGenres);
+document.getElementById('artistNS2').addEventListener('click', getArtistData);
 
 function trackNameSearch() {
     let trackName = document.getElementById('trackName');
@@ -73,7 +74,6 @@ function getTrackData(whichSearch, textField) {
     fetch(path)
     .then(res => res.json()
     .then(data => {
-        console.log(data);
         data.forEach(e => {
             let path2 = '/tracks/id/' + e;
             fetch(path2)
@@ -102,13 +102,10 @@ function getTrackData(whichSearch, textField) {
                 table.appendChild(row);
             })
             )
-            //catch
         });
     })
-    //catch
     )
-    .catch(err => console.log('Failed to find track or album of that name'))
-    //catch
+    .catch(err => console.log('Failed to find track, album or artist of that name'))
 }
 
 function createList() {
@@ -390,4 +387,60 @@ function showGenres() {
 
 function containsLetter(str) {
     return ((/[a-z]/.test(str)) || (/[A-Z]/.test(str)));
+}
+
+function getArtistData() {
+    let artistName = document.getElementById('artistName2');
+    let filterName = artistName.value.toLowerCase();
+
+    // Don't search if search bar is empty
+    if (filterName == ""){
+        return;
+    }
+
+    // Ensure that the search input is no more than 20 characters
+    if ((filterName.length > 20)) {
+        artistName.value = "";
+        return;
+    }
+
+    let path = '/artists/' + filterName;
+
+    let rowCount = document.getElementById("artistSearchTable").rows.length;
+    for (i = rowCount - 1; i > 0; i--) {
+        document.getElementById("artistSearchTable").deleteRow(i);
+    }
+
+    fetch(path)
+    .then(res => res.json()
+    .then(data => {
+        data.forEach(e => {
+            let path2 = '/artists/id/' + e;
+            fetch(path2)
+            .then(response => response.json()
+            .then(data2 => {
+
+                let table = document.getElementById('artistSearchTable');
+                let row = document.createElement('tr');
+                let aid = document.createElement('td');
+                let an = document.createElement('td');
+                let al = document.createElement('td');
+                let am = document.createElement('td');
+
+                aid.innerText = data2.artist_id;
+                an.innerText = data2.artist_name;
+                al.innerText = data2.artist_location;
+                am.innerText = data2.artist_members;
+
+                row.appendChild(aid);
+                row.appendChild(an);
+                row.appendChild(al);
+                row.appendChild(am);
+                table.appendChild(row);
+            })
+            )
+        });
+    })
+    )
+    .catch(err => console.log('Failed to find track, album or artist of that name'))
 }
