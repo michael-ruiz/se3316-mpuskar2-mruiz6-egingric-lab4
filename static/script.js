@@ -8,6 +8,9 @@ document.getElementById('showAllLists').addEventListener('click', getAllLists);
 document.getElementById('showAllListsDetailed').addEventListener('click', getAllListsDetailed);
 document.getElementById('genres').addEventListener('click', showGenres);
 document.getElementById('artistNS2').addEventListener('click', getArtistData);
+document.getElementById('sortTN').addEventListener('click', sortTN);
+document.getElementById('sortAN').addEventListener('click', sortAN);
+document.getElementById('sortARN').addEventListener('click', sortARN);
 
 function trackNameSearch() {
     let trackName = document.getElementById('trackName');
@@ -106,6 +109,114 @@ function getTrackData(whichSearch, textField) {
     })
     )
     .catch(err => console.log('Failed to find track, album or artist of that name'))
+}
+
+function sortTN() {
+    let table = document.getElementById('trackSearchTable');
+    let rowCount = table.rows.length;
+    let objArr = [];
+    for (i = rowCount - 1; i > 0; i--) {
+        let obj = {
+            id: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].textContent,
+            tn: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].textContent,
+            an: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].textContent,
+            arn: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].textContent,
+            rt: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[4].textContent
+        }
+        objArr.push(obj);
+    }
+
+    objArr.sort(compareTN);
+
+    for (i = 1; i < rowCount; i++) {
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].innerText = objArr[i - 1].id;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].innerText = objArr[i - 1].tn;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].innerText = objArr[i - 1].an;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].innerText = objArr[i - 1].arn;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[4].innerText = objArr[i - 1].rt;
+    }
+}
+
+function sortAN() {
+    let table = document.getElementById('trackSearchTable');
+    let rowCount = table.rows.length;
+    let objArr = [];
+    for (i = rowCount - 1; i > 0; i--) {
+        let obj = {
+            id: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].textContent,
+            tn: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].textContent,
+            an: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].textContent,
+            arn: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].textContent,
+            rt: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[4].textContent
+        }
+        objArr.push(obj);
+    }
+
+    objArr.sort(compareAN);
+
+    for (i = 1; i < rowCount; i++) {
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].innerText = objArr[i - 1].id;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].innerText = objArr[i - 1].tn;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].innerText = objArr[i - 1].an;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].innerText = objArr[i - 1].arn;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[4].innerText = objArr[i - 1].rt;
+    }
+}
+
+function sortARN() {
+    let table = document.getElementById('trackSearchTable');
+    let rowCount = table.rows.length;
+    let objArr = [];
+    for (i = rowCount - 1; i > 0; i--) {
+        let obj = {
+            id: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].textContent,
+            tn: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].textContent,
+            an: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].textContent,
+            arn: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].textContent,
+            rt: table.getElementsByTagName('tr')[i].getElementsByTagName('td')[4].textContent
+        }
+        objArr.push(obj);
+    }
+
+    objArr.sort(compareARN);
+
+    for (i = 1; i < rowCount; i++) {
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].innerText = objArr[i - 1].id;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].innerText = objArr[i - 1].tn;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].innerText = objArr[i - 1].an;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].innerText = objArr[i - 1].arn;
+        table.getElementsByTagName('tr')[i].getElementsByTagName('td')[4].innerText = objArr[i - 1].rt;
+    }
+}
+
+function compareTN(a, b) {
+    if (a.tn < b.tn){
+        return -1;
+    }
+    if (a.tn > b.tn){
+        return 1;
+    }
+    return 0;
+}
+
+function compareAN(a, b) {
+    if (a.an < b.an){
+        return -1;
+    }
+    if (a.an > b.an){
+        return 1;
+    }
+    return 0;
+}
+
+function compareARN(a, b) {
+    if (a.arn < b.arn){
+        return -1;
+    }
+    if (a.arn > b.arn){
+        return 1;
+    }
+    return 0;
 }
 
 function createList() {
