@@ -3,14 +3,13 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 4000;
 const router = express.Router();
 
 var genres = [];
 var tracks = [];
 var artists = [];
 
-// Test comment
 app.use('/', router);
 router.use(express.json());
 
