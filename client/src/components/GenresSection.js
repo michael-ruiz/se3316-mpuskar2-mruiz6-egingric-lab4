@@ -3,9 +3,9 @@ import React from 'react'
 export default function GenresSection() {
   return (
     <>
-    <div classNam="displayGenres">
-    <h2>Genres</h2>
-    display genres
+    <div className="displayGenres">
+      <h2>Genres</h2>
+      <button>Show All</button>
     </div>
     </>
   )

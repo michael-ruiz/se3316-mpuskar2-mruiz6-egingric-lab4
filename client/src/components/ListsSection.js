@@ -8,7 +8,7 @@ export default function ListsSection() {
         <input type="text" placeholder="Search by artist name"/>
         <button>Search</button>
     </div>
-    <div classNam="displayLists">
+    <div className="displayLists">
     display lists
     </div>
     </>

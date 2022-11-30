@@ -8,7 +8,7 @@ export default function ArtistsSection() {
         <input type="text" placeholder="Search by artist name"/>
         <button>Search</button>
     </div>
-    <div classNam="displayTracks">
+    <div className="displayTracks">
     display artists
     </div>
     </>
