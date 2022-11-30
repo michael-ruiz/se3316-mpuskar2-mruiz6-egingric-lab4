@@ -1,8 +1,20 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import './App.css'
+import Title from './components/Title'
+import TracksSection from './components/TracksSection'
+import ArtistsSection from './components/ArtistsSection'
+import ListsSection from './components/ListsSection'
+import GenresSection from './components/GenresSection'
 
 function App() {
   return (
-    <div>App</div>
+    <>
+    <Title/>
+    <TracksSection/>
+    <ArtistsSection/>
+    <ListsSection/>
+    <GenresSection/>
+    </>
   )
 }
 
