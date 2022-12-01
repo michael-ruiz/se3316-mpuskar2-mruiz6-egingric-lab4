@@ -16,7 +16,7 @@ router.use(express.json());
 // Database file
 let db = require("./data/lists.json");
 
-fs.createReadStream('lab3-data/genres.csv')
+fs.createReadStream('server/lab3-data/genres.csv')
     .pipe(csv())
     .on('data', (rows) => {
         genres.push(rows);
@@ -30,7 +30,7 @@ fs.createReadStream('lab3-data/genres.csv')
         })
     });
 
-fs.createReadStream('lab3-data/raw_tracks.csv')
+fs.createReadStream('server/lab3-data/raw_tracks.csv')
     .pipe(csv())
     .on('data', (rows) => {
         tracks.push(rows);
@@ -53,7 +53,7 @@ fs.createReadStream('lab3-data/raw_tracks.csv')
         })
     });
 
-fs.createReadStream('lab3-data/raw_artists.csv')
+fs.createReadStream('server/lab3-data/raw_artists.csv')
     .pipe(csv())
     .on('data', (rows) => {
         artists.push(rows);
@@ -183,6 +183,39 @@ app.get('/tracks/artist/:search', (req, res) => {
     } 
 });
 
+app.get('/tracks/genre/:search', (req, res) => {
+    const search = req.params.search;
+    let n = 10; // Allow at most 10 results
+    console.log(`GET request for ${req.url}`);
+    
+    let results = [];
+    for (i = 0; i < tracks.length; i++) {
+        let arrG = tracks[i]['track_genres'];
+        let genreArr;
+        if (arrG != ""){
+            let r = arrG.replace(/'/g, '"');
+            genreArr = JSON.parse(r);
+
+            if ((genreArr[0].genre_title).toLowerCase().includes(search.toLowerCase())) {
+                results.push(tracks[i]['track_id']);
+                n -= 1;
+            }
+            if (n <= 0) {
+                break;
+            }
+        }
+    }
+
+    if (results.length > 0) {
+        res.send(results);
+    }
+    else {
+        res.status(404).send(`${search} was not found!`);
+    } 
+});
+
+
+
 // Get artist ID by artist name b5
 app.get('/artists/:artist_name', (req, res) => {
     const name = req.params.artist_name;
@@ -224,7 +257,7 @@ app.put('/lists/:list_name', (req, res) => {
         console.log("Make a new list");
         db.push(newList);
 
-        fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
+        fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
             if (err) throw err;
             console.log("Done writing to file");
         });
@@ -259,7 +292,7 @@ app.post('/lists/:list_name', (req, res) => {
         console.log("Modify ", name);
         db[results] = newList;
 
-        fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
+        fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
             if (err) throw err;
             console.log("Done writing to file");
         });
@@ -295,7 +328,7 @@ app.delete('/lists/:list_name', (req, res) => {
     else {
         console.log("Delete ", name);
         db.splice(results, 1); // Remove the item
-        fs.writeFile("./data/lists.json", JSON.stringify(db), (err) => {
+        fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
             if (err) throw err;
             console.log("Done writing to file");
         });
