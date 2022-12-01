@@ -1,5 +1,6 @@
 import React from 'react';
 import LoginButton from './LoginButton'
+import LogoutButton from './LogoutButton';
 
 export default function Title() {
   return (
@@ -13,6 +14,9 @@ export default function Title() {
             <td></td>
             <td>
               <LoginButton/>
+            </td>
+            <td>
+              <LogoutButton/>
             </td>
           </tr>
           </tbody>
