@@ -18,17 +18,9 @@ export default function TracksSection() {
       display tracks
     </div>
     <div id="trackSearchDiv">
-      <table id="trackSearchTable">
-        <tbody>
-          <tr>
-            <th>Track ID</th>
-            <th>Track Name</th>
-            <th>Album Name</th>
-            <th>Artist Name</th>
-            <th>Runtime</th>
-          </tr>
-        </tbody>
-      </table>
+      <ul id="trackSearchList">
+        <li><b>Track Name | Album Name | Artist Name | Runtime</b></li>
+      </ul>
     </div>
     </>
   )
@@ -109,9 +101,8 @@ function genreNameSearch() {
 function getTrackData(whichSearch, textField) {
   let path = '/tracks/' + whichSearch + '/' + textField;
 
-  let rowCount = document.getElementById("trackSearchTable").rows.length;
-  for (let i = rowCount - 1; i > 0; i--) {
-      document.getElementById("trackSearchTable").deleteRow(i);
+  while (document.getElementById("trackSearchList").firstChild != document.getElementById("trackSearchList").lastChild){
+    document.getElementById("trackSearchList").removeChild(document.getElementById("trackSearchList").lastChild);
   }
 
   fetch(path)
@@ -123,26 +114,31 @@ function getTrackData(whichSearch, textField) {
           .then(response => response.json()
           .then(data2 => {
 
-              let table = document.getElementById('trackSearchTable');
-              let row = document.createElement('tr');
-              let tid = document.createElement('td');
-              let tn = document.createElement('td');
-              let an = document.createElement('td');
-              let arn = document.createElement('td');
-              let rt = document.createElement('td');
+              let list = document.getElementById('trackSearchList');
+              let li = document.createElement('li');
+              let p = document.createElement('p');
+              let a = document.createElement('a');
+              let input = document.createElement('input');
 
-              tid.innerText = data2.track_id;
-              tn.innerText = data2.track_title;
-              an.innerText = data2.album_title;
-              arn.innerText = data2.artist_name;
-              rt.innerText = data2.track_duration;
+              p.innerText = data2.track_title + " | " + data2.album_title;
 
-              row.appendChild(tid);
-              row.appendChild(tn);
-              row.appendChild(an);
-              row.appendChild(arn);
-              row.appendChild(rt);
-              table.appendChild(row);
+              a.setAttribute('href', `https://www.youtube.com/results?search_query=${data2.album_title}+${data2.track_title}`);
+              a.setAttribute('target', '_blank');
+
+              input.setAttribute('type', 'button');
+              input.setAttribute('value', "test");
+
+              let button = document.createElement('button');
+              button.innerText = "Expand";
+              button.onclick = function () {
+                p.innerText = data2.track_title + " | " + data2.album_title + " | "  + data2.artist_name + " | " + data2.track_duration;
+              }
+
+              li.appendChild(p);
+              a.appendChild(input);
+              li.appendChild(a);
+              li.appendChild(button);
+              list.appendChild(li);
           })
           )
       });
