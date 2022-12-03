@@ -26,3 +26,8 @@ li.static
 {
     width: 100%;
 }
+
+.hidden
+{
+    visibility: hidden;
+}
