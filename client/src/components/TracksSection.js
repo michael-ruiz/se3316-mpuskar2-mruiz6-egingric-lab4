@@ -126,7 +126,7 @@ function getTrackData(whichSearch, textField) {
               a.setAttribute('target', '_blank');
 
               input.setAttribute('type', 'button');
-              input.setAttribute('value', "test");
+              input.setAttribute('value', "Play");
 
               let button = document.createElement('button');
               button.innerText = "Expand";

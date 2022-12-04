@@ -309,7 +309,7 @@ app.get('/lists/:list_name', (req, res) => {
     let results = db.find(i => i.name === String(name));
 
     if (results) {
-        res.send(results.tracks);
+        res.send(results);
     }
     else {
         res.status(404).send(`List ${name} was not found!`);
@@ -342,8 +342,9 @@ app.get('/lists/all/lists', (req, res) => {
     console.log(`GET request for ${req.url}`);
 
     let results = [];
+    let upTo = (db.length > 10) ? 10 : db.length;
 
-    for (i = 0; i < db.length; i++){
+    for (i = 0; i < upTo; i++){
         let trackArray = db[i].tracks;
         let runtime = 0;
 
@@ -366,7 +367,12 @@ app.get('/lists/all/lists', (req, res) => {
 
         let obj = {
             "name": db[i].name,
+            "tracks": trackArray,
             "length": trackArray.length,
+            "creator": db[i].creator,
+            "visibility": db[i].visibility,
+            "rating": db[i].rating,
+            "lastModified": db[i].lastModified,
             "runtime": runtimeStr
         }
         results.push(obj);
