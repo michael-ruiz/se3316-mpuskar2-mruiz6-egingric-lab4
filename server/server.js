@@ -368,6 +368,7 @@ app.get('/lists/all/lists', (req, res) => {
         let obj = {
             "name": db[i].name,
             "tracks": trackArray,
+            "description": db[i].description,
             "length": trackArray.length,
             "creator": db[i].creator,
             "visibility": db[i].visibility,
