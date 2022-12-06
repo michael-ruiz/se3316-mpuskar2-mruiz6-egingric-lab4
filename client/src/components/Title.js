@@ -18,6 +18,8 @@ export default function Title() {
           </li>
           <li className="static">
             <Link to="/privacypolicy"><button>Privacy Policy</button></Link>
+            <Link to="/AUP"><button>Acceptable Use Policy</button></Link>
+            <Link to="/DMCA"><button>DMCA</button></Link>
           </li>
         </ul>
     </div>

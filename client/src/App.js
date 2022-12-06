@@ -14,7 +14,6 @@ function App() {
     <ArtistsSection/>
     <ListsSection/>
     <ListsSectionLogin/>
-    <GenresSection/>
     </>
   )
 }
