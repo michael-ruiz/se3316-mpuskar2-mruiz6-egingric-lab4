@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 
-const Profile = () => {
+const MiniProfile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
@@ -11,14 +11,11 @@ const Profile = () => {
 
   return (
     isAuthenticated && (
-      <div className="profile">
-        <img src={user.picture} alt={user.name}/>
-        <p>{user.email}</p>
-        <button>Deactivate Account</button>
-        <Link to="/"><button>Back</button></Link>
+      <div>
+        <Link to="/profile"><p>{user.email}</p></Link>
       </div>
     )
   );
 };
 
-export default Profile;
+export default MiniProfile;

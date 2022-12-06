@@ -31,3 +31,8 @@ li.static
 {
     visibility: hidden;
 }
+
+div.profile
+{
+    text-align: center;
+}
