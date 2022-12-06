@@ -1,8 +1,8 @@
 import React from 'react';
 import LoginButton from './LoginButton'
 import LogoutButton from './LogoutButton';
-import Profile from './Profile';
 import { Link } from "react-router-dom";
+import MiniProfile from './MiniProfile';
 
 export default function Title() {
   return (
@@ -12,7 +12,7 @@ export default function Title() {
           <span className="title">Music App</span>
           </li>
           <li className="static">
-            <Profile/>
+            <MiniProfile/>
             <LoginButton/>
             <LogoutButton/>
           </li>

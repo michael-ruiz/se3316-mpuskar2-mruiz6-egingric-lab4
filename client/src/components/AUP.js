@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from "react-router-dom"
 
 export default function AUP() {
   return (
@@ -63,6 +64,7 @@ export default function AUP() {
 <p>If you have any questions, concerns, or complaints regarding this Policy, we encourage you to contact us using the details below:</p>
 <p>mruiz6@uwo.ca | mpuskar2@uwo.ca | egingric@uwo.ca</p>
 <p>This document was last updated on December 5, 2022</p>
+<Link to="/"><button>Back</button></Link>
     </>
   )
 }
