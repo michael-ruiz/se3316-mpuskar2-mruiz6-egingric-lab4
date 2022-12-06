@@ -242,6 +242,7 @@ app.put('/lists/:list_name', (req, res) => {
     console.log(`PUT request for ${req.url}`);
 
     newList.name = String(name);
+    newList.tracksDet = [];
 
     let results = db.findIndex(i => i.name === String(name));
     if (results < 0) {
@@ -251,6 +252,9 @@ app.put('/lists/:list_name', (req, res) => {
             if (!results) {
                 res.status(404).send(`Track of ID ${newList.tracks[i]} does not exist!`);
                 return;
+            }
+            else {
+                newList.tracksDet.push(results);
             }
         }
 
@@ -275,6 +279,7 @@ app.post('/lists/:list_name', (req, res) => {
     console.log(`POST request for ${req.url}`);
 
     newList.name = String(name);
+    newList.tracksDet = [];
 
     let results = db.findIndex(i => i.name === String(name));
     if (results < 0) {
@@ -286,6 +291,9 @@ app.post('/lists/:list_name', (req, res) => {
             if (!results) {
                 res.status(404).send(`Track of ID ${newList.tracks[i]} does not exist!`);
                 return;
+            }
+            else {
+                newList.tracksDet.push(results);
             }
         }
 
@@ -340,11 +348,11 @@ app.delete('/lists/:list_name', (req, res) => {
 // Get all list names, number of tracks in each and total play time b10
 app.get('/lists/all/lists', (req, res) => {
     console.log(`GET request for ${req.url}`);
-
+    //let maxLength = 10;
     let results = [];
-    let upTo = (db.length > 10) ? 10 : db.length;
+    //let upTo = (db.length > maxLength) ? maxLength : db.length;
 
-    for (i = 0; i < upTo; i++){
+    for (i = 0; i < db.length; i++){
         let trackArray = db[i].tracks;
         let runtime = 0;
 
@@ -374,7 +382,8 @@ app.get('/lists/all/lists', (req, res) => {
             "visibility": db[i].visibility,
             "rating": db[i].rating,
             "lastModified": db[i].lastModified,
-            "runtime": runtimeStr
+            "runtime": runtimeStr,
+            "tracksDet": db[i].tracksDet
         }
         results.push(obj);
     }

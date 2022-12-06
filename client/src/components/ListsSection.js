@@ -50,11 +50,11 @@ export function ListsSectionLogin() {
             <button onClick={() => deleteList(user.email)} id="deleteList">Delete List</button>
             <p>Input no more than 20 characters for name</p>
       </div>
-      <div>
+      <div className={user == undefined ? "hidden" : ""}>
         <h2>My Lists</h2>
-        <button onClick={getMyLists}>View My Lists</button>
+        <button onClick={() => getMyLists(user.email)}>View My Lists</button>
       </div>
-      <div>
+      <div className={user == undefined ? "hidden" : ""}>
         <ul id="userListList">
           <li><b>List Name | Number of Tracks | Runtime</b></li>
         </ul>
@@ -64,6 +64,7 @@ export function ListsSectionLogin() {
 }
 
 function getAllLists() {
+  let n = 10;
 
   while (document.getElementById("listList").firstChild != document.getElementById("listList").lastChild){
     document.getElementById("listList").removeChild(document.getElementById("listList").lastChild);
@@ -75,59 +76,68 @@ function getAllLists() {
       console.log(data);
 
       data.sort(compareDate);
-      data.forEach(e => {
-          if (e.visibility == "public"){
+      for (let i = 0; i < data.length; i++){
+          if (data[i].visibility == "public"){
             let list = document.getElementById('listList');
             let li = document.createElement('li');
             let p = document.createElement('p');
-            p.innerText = e.name + " | " + e.length + " | " + e.runtime + " | " + e.creator + " | " + e.rating;
+            p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].rating;
   
             let button = document.createElement('button');
             button.innerText = "Expand";
-            button.onclick = function () {
-              let desc = document.createElement('p');
-              desc.innerText = "Description: \n" + e.description;
-              li.appendChild(desc);
 
-              e.tracks.forEach(id => {
-                fetch('/tracks/id/' + id)
-                .then(response => response.json()
-                .then(data2 => {
-                        
-                  let li = document.createElement('li');
-                  let p = document.createElement('p');
-                  let a = document.createElement('a');
-                  let input = document.createElement('input');
-    
-                  p.innerText = data2.track_title + " | " + data2.album_title;
-    
-                  a.setAttribute('href', `https://www.youtube.com/results?search_query=${data2.album_title}+${data2.track_title}`);
-                  a.setAttribute('target', '_blank');
-    
-                  input.setAttribute('type', 'button');
-                  input.setAttribute('value', "Play");
-    
-                  let button = document.createElement('button');
-                  button.innerText = "Expand";
-                  button.onclick = function () {
-                    p.innerText = data2.track_title + " | " + data2.album_title + " | "  + data2.artist_name + " | " + data2.track_duration;
-                  }
-    
-                  li.appendChild(p);
-                  a.appendChild(input);
-                  li.appendChild(a);
-                  li.appendChild(button);
-                  list.appendChild(li);
-                })
-                )
-              })
-            }
+            let desc = document.createElement('p');
+            desc.innerText = "Description: \n" + data[i].description;
+            desc.style.display = "none";
 
             li.appendChild(p);
             li.appendChild(button);
+            li.appendChild(desc);
+
+            data[i].tracksDet.forEach(t => {
+                        
+              let p = document.createElement('p');
+              let a = document.createElement('a');
+              let input = document.createElement('input');
+
+              p.innerText = t.track_title + " | " + t.album_title;
+
+              a.setAttribute('href', `https://www.youtube.com/results?search_query=${t.album_title}+${t.track_title}`);
+              a.setAttribute('target', '_blank');
+
+              input.setAttribute('type', 'button');
+              input.setAttribute('value', "Play");
+
+              let button = document.createElement('button');
+              button.innerText = "Expand";
+              button.onclick = function () {
+                p.innerText = t.track_title + " | " + t.album_title + " | "  + t.artist_name + " | " + t.track_duration;
+              }
+
+              p.style.display = "none";
+              a.style.display = "none";
+              button.style.display = "none";
+
+              li.appendChild(p);
+              a.appendChild(input);
+              li.appendChild(a);
+              li.appendChild(button);
+            })
+
+            button.onclick = function () {
+              for (let j = 0; j < li.children.length; j++){
+                li.children[j].style.display = "";
+              }
+            }
+
             list.appendChild(li);
           }
-      })
+
+        n--;
+        if (n < 1){
+          break;
+        }
+      }
   })
   )
 }
@@ -346,6 +356,80 @@ function containsLetter(str) {
   return ((/[a-z]/.test(str)) || (/[A-Z]/.test(str)));
 }
 
-function getMyLists(){
+function getMyLists(email){
+  let n = 20;
 
+  while (document.getElementById("userListList").firstChild != document.getElementById("userListList").lastChild){
+    document.getElementById("userListList").removeChild(document.getElementById("userListList").lastChild);
+  }
+
+  fetch('/lists/all/lists')
+  .then(res => res.json()
+  .then(data => {
+      console.log(data);
+
+      for (let i = 0; i < data.length; i++){
+        if (data[i].creator === email){
+          let list = document.getElementById('userListList');
+          let li = document.createElement('li');
+          let p = document.createElement('p');
+          p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].rating;
+
+          let button = document.createElement('button');
+          button.innerText = "Expand";
+
+          let desc = document.createElement('p');
+          desc.innerText = "Description: \n" + data[i].description;
+          desc.style.display = "none";
+
+          li.appendChild(p);
+          li.appendChild(button);
+          li.appendChild(desc);
+
+          data[i].tracksDet.forEach(t => {
+                      
+            let p = document.createElement('p');
+            let a = document.createElement('a');
+            let input = document.createElement('input');
+
+            p.innerText = t.track_title + " | " + t.album_title;
+
+            a.setAttribute('href', `https://www.youtube.com/results?search_query=${t.album_title}+${t.track_title}`);
+            a.setAttribute('target', '_blank');
+
+            input.setAttribute('type', 'button');
+            input.setAttribute('value', "Play");
+
+            let button = document.createElement('button');
+            button.innerText = "Expand";
+            button.onclick = function () {
+              p.innerText = t.track_title + " | " + t.album_title + " | "  + t.artist_name + " | " + t.track_duration;
+            }
+
+            p.style.display = "none";
+            a.style.display = "none";
+            button.style.display = "none";
+
+            li.appendChild(p);
+            a.appendChild(input);
+            li.appendChild(a);
+            li.appendChild(button);
+          })
+
+          button.onclick = function () {
+            for (let j = 0; j < li.children.length; j++){
+              li.children[j].style.display = "";
+            }
+          }
+
+          list.appendChild(li);
+        }
+
+      n--;
+      if (n < 1){
+        break;
+      }
+    }
+  })
+  )
 }
