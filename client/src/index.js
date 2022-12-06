@@ -6,6 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from "@auth0/auth0-react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivacyPolicy from './components/PrivacyPolicy';
+import DMCA from './components/DMCA';
+import AUP from './components/AUP';
+import Profile from './components/Profile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,7 +20,10 @@ root.render(
     <BrowserRouter>
     <Routes>
       <Route index element={<App/>}/>
+      <Route path="profile" element={<Profile/>}/>
       <Route path="privacypolicy" element={<PrivacyPolicy/>}/>
+      <Route path="AUP" element={<AUP/>}/>
+      <Route path="DMCA" element={<DMCA/>}/>
     </Routes>
     </BrowserRouter>
     </Auth0Provider>
