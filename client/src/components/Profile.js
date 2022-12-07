@@ -50,7 +50,7 @@ const Profile = () => {
         <h3>Add Admin Account</h3>
           <input id="inputAdmin" type="text" placeholder="email"/>
           <button onClick={addAdmin}>Go</button>
-          <h3>Deactivate Account</h3>
+          <h3>Deactivate / Reactivate Account</h3>
           <input id="inputDA" type="text" placeholder="email"/>
           <button onClick={addDA}>Go</button>
         </div>

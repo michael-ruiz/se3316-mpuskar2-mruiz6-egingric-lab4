@@ -409,6 +409,16 @@ app.put('/user/attributes/deactivate/:email', (req, res) => {
             if (e){throw e};
         });
     }
+
+    else{
+        let a = dList.indexOf(email);
+        dList.splice(a, 1);
+        userAtt.deactivated = dList;
+
+        fs.writeFile('./server/data/user.json', JSON.stringify(userAtt), (e) => {
+            if (e){throw e};
+        });
+    }
 });
 
 app.put('/user/attributes/admin/:email', (req, res) => {
