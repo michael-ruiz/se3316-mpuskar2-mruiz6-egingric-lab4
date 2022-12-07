@@ -3,6 +3,7 @@ import LoginButton from './LoginButton'
 import LogoutButton from './LogoutButton';
 import { Link } from "react-router-dom";
 import MiniProfile from './MiniProfile';
+import About from './About';
 
 export default function Title() {
   return (
@@ -22,6 +23,7 @@ export default function Title() {
             <Link to="/DMCA"><button>DMCA</button></Link>
           </li>
         </ul>
+        <About/>
     </div>
   )
 }
