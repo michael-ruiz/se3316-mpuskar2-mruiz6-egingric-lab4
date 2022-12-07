@@ -9,12 +9,51 @@ const Profile = () => {
     return <div>Loading ...</div>;
   }
 
+  async function check(){
+    let temp = [];
+    let div = document.getElementById('adminProfile');
+    await fetch('/user/attributes/all').then(e => e.json()).then(e => temp = e.admin);
+
+    if (temp.includes(user.email)){
+      div.style.display = '';
+    }
+
+    else{
+      div.style.display = 'none';
+    }
+  }
+
+  async function addAdmin(){
+    let newAdmin = document.getElementById('inputAdmin').value; 
+
+    await fetch(`/user/attributes/admin/${newAdmin}`, {
+      method: 'PUT'});
+
+    alert('Admin Added');
+  }
+
+  async function addDA(){
+    let newDA = document.getElementById('inputDA').value; 
+
+    await fetch(`/user/attributes/deactivate/${newDA}`, {
+      method: 'PUT'});
+
+    alert('Account Deactivated');
+  }
+
   return (
     isAuthenticated && (
-      <div className="profile">
+      <div className="profile" onLoad={check}>
         <img src={user.picture} alt={user.name}/>
         <p>{user.email}</p>
-        <button>Deactivate Account</button>
+        <div id="adminProfile">
+        <h3>Add Admin Account</h3>
+          <input id="inputAdmin" type="text" placeholder="email"/>
+          <button onClick={addAdmin}>Go</button>
+          <h3>Deactivate Account</h3>
+          <input id="inputDA" type="text" placeholder="email"/>
+          <button onClick={addDA}>Go</button>
+        </div>
         <Link to="/"><button>Back</button></Link>
       </div>
     )
