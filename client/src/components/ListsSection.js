@@ -10,7 +10,7 @@ export default function ListsSection() {
     </div>
     <div>
       <ul id="listList">
-        <li><b>List Name | Number of Tracks | Runtime | Creator | Rating</b></li>
+        <li><b>List Name | Number of Tracks | Runtime | Creator | avgRating</b></li>
       </ul>
     </div>
     </>
@@ -77,11 +77,16 @@ function getAllLists() {
 
       data.sort(compareDate);
       for (let i = 0; i < data.length; i++){
+        if (n < 1){
+          break;
+        }
           if (data[i].visibility == "public"){
+            n--;
+
             let list = document.getElementById('listList');
             let li = document.createElement('li');
             let p = document.createElement('p');
-            p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].rating;
+            p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].avgRating;
   
             let button = document.createElement('button');
             button.innerText = "Expand";
@@ -132,11 +137,6 @@ function getAllLists() {
 
             list.appendChild(li);
           }
-
-        n--;
-        if (n < 1){
-          break;
-        }
       }
   })
   )
@@ -194,8 +194,9 @@ function createList(email) {
       description: descTxt,
       creator: email,
       visibility: visTxt,
-      rating: "",
-      lastModified: date
+      avgRating: "",
+      lastModified: date,
+      reviews: []
   }
 
   let path = '/lists/' + filterName;
@@ -261,7 +262,7 @@ async function updateList(email) {
     description: descTxt,
     creator: email,
     visibility: visTxt,
-    rating: "",
+    avgRating: "",
     lastModified: date
 }
 
@@ -369,11 +370,16 @@ function getMyLists(email){
       console.log(data);
 
       for (let i = 0; i < data.length; i++){
+        if (n < 1){
+          break;
+        }
         if (data[i].creator === email){
+          n--;
+
           let list = document.getElementById('userListList');
           let li = document.createElement('li');
           let p = document.createElement('p');
-          p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].rating;
+          p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].avgRating;
 
           let button = document.createElement('button');
           button.innerText = "Expand";
@@ -424,11 +430,6 @@ function getMyLists(email){
 
           list.appendChild(li);
         }
-
-      n--;
-      if (n < 1){
-        break;
-      }
     }
   })
   )

@@ -299,6 +299,7 @@ app.post('/lists/:list_name', (req, res) => {
         }
 
         console.log("Modify ", name);
+        newList.reviews = db[results].reviews;
         db[results] = newList;
 
         fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
@@ -381,7 +382,7 @@ app.get('/lists/all/lists', (req, res) => {
             "length": trackArray.length,
             "creator": db[i].creator,
             "visibility": db[i].visibility,
-            "rating": db[i].rating,
+            "avgRating": db[i].avgRating,
             "lastModified": db[i].lastModified,
             "runtime": runtimeStr,
             "tracksDet": db[i].tracksDet
