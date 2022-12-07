@@ -15,6 +15,7 @@ router.use(express.json());
 
 // Database file
 let db = require("./data/lists.json");
+let userAtt = require("./data/user.json");
 
 fs.createReadStream('server/lab3-data/genres.csv')
     .pipe(csv())
@@ -389,6 +390,38 @@ app.get('/lists/all/lists', (req, res) => {
     }
 
     res.send(results);
+});
+
+app.get('/user/attributes/all', (req, res) => {
+    res.send(userAtt);
+});
+
+app.put('/user/attributes/deactivate/:email', (req, res) => {
+    let email = req.params.email;
+    let dList = userAtt.deactivated;
+    
+    if (!dList.includes(email)){
+        dList.push(email);
+        userAtt.deactivated = dList;
+
+        fs.writeFile('./server/data/user.json', JSON.stringify(userAtt), (e) => {
+            if (e){throw e};
+        });
+    }
+});
+
+app.put('/user/attributes/admin/:email', (req, res) => {
+    let email = req.params.email;
+    let aList = userAtt.admin;
+
+    if (!aList.includes(email)){
+        aList.push(email);
+        userAtt.admin = aList;
+
+        fs.writeFile('./server/data/user.json', JSON.stringify(userAtt), (e) => {
+            if (e){throw e};
+        });
+    }
 });
 
 app.listen(port, () => {
