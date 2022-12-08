@@ -143,11 +143,13 @@ function getAllLists() {
 }
 
 function compareDate(a, b){
-  if (a.lastModified < b.lastModified){
-    return -1;
-  }
-  if (a.lastModified > b.lastModified){
+  let d1 = new Date(a.lastModified);
+  let d2 = new Date(b.lastModified);
+  if (d1 < d2){
     return 1;
+  }
+  if (d1 > d2){
+    return -1;
   }
   return 0;
 }
@@ -162,8 +164,8 @@ function createList(email) {
   let vis = document.getElementById('vis');
   let visTxt;
 
-  // Don't create list if list name box is empty
-  if (filterName == ""){
+  // Don't create list if list name box or tracks is empty
+  if (filterName == "" || trackIdsTxt == ""){
       return;
   }
 
@@ -179,6 +181,11 @@ function createList(email) {
       trackArray = trackIdsTxt.split(",");
   }
 
+  if (descTxt.length > 100) {
+    desc.value = "";
+    return;
+  }
+
   if (vis.checked) {
     visTxt = "public";
   }
@@ -187,7 +194,6 @@ function createList(email) {
   }
 
   let d1 = new Date();
-  let date = `${d1.getDate()}-${d1.getMonth() + 1}-${d1.getFullYear()}`;
 
   let newList = {
       tracks: trackArray,
@@ -195,7 +201,7 @@ function createList(email) {
       creator: email,
       visibility: visTxt,
       avgRating: "",
-      lastModified: date,
+      lastModified: d1,
       reviews: []
   }
 
@@ -230,8 +236,8 @@ async function updateList(email) {
   let visTxt;
   let creator;
 
-  // Don't create list if list name box is empty
-  if (filterName == ""){
+  // Don't create list if list name box or tracks is empty
+  if (filterName == "" || trackIdsTxt == ""){
       return;
   }
 
@@ -247,6 +253,11 @@ async function updateList(email) {
       trackArray = trackIdsTxt.split(",");
   }
 
+  if (descTxt.length > 100) {
+    desc.value = "";
+    return;
+  }
+
   if (vis.checked) {
     visTxt = "public";
   }
@@ -255,7 +266,6 @@ async function updateList(email) {
   }
 
   let d1 = new Date();
-  let date = `${d1.getDate()}-${d1.getMonth() + 1}-${d1.getFullYear()}`;
 
   let newList = {
     tracks: trackArray,
@@ -263,7 +273,7 @@ async function updateList(email) {
     creator: email,
     visibility: visTxt,
     avgRating: "",
-    lastModified: date
+    lastModified: d1
 }
 
   let path = '/lists/' + filterName;
@@ -316,10 +326,9 @@ async function deleteList(email) {
       listName.value = "";
       return;
   }
-  
 
   let path = '/lists/' + filterName;
-
+  if (window.confirm("Are you sure you want to delete this list?")){
   // Get creator from list and check that it matches logged in user first
   await fetch(path)
   .then(res2 => res2.json()
@@ -350,6 +359,7 @@ async function deleteList(email) {
   }
   else {
     alert("Cannot delete another user's list!");
+  }
   }
 }
 
