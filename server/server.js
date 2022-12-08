@@ -549,6 +549,20 @@ app.put('/user/attributes/admin/:email', (req, res) => {
     }
 });
 
+app.put('/user/attributes/verified/:email', (req, res) => {
+    let email = req.params.email;
+    let vList = userAtt.verified;
+
+    if (!vList.includes(email)){
+        vList.push(email);
+        userAtt.verified = vList;
+
+        fs.writeFile('./server/data/user.json', JSON.stringify(userAtt), (e) => {
+            if (e){throw e};
+        });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });

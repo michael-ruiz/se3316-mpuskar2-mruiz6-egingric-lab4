@@ -21,10 +21,13 @@ const MiniProfile = () => {
     }
   }
 
-  function isVerified(){
+  async function isVerified(){
     if (user != undefined){
-      if (!user.isVerified){
-        alert('Please Verify email');
+      let t = [];
+      await fetch('/user/attributes/all').then(e => e.json()).then(e => t = e.verified);
+
+      if (!t.includes(user.email)){
+        alert('Please verify your account');
       }
     }
   }
