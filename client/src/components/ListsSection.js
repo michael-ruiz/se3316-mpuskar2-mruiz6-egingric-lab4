@@ -94,6 +94,7 @@ function getAllLists() {
             let desc = document.createElement('p');
             desc.innerText = "Description: \n" + data[i].description;
             desc.style.display = "none";
+            desc.setAttribute('className', 'hiding');
 
             li.appendChild(p);
             li.appendChild(button);
@@ -116,12 +117,21 @@ function getAllLists() {
               let button = document.createElement('button');
               button.innerText = "Expand";
               button.onclick = function () {
-                p.innerText = t.track_title + " | " + t.album_title + " | "  + t.artist_name + " | " + t.track_duration;
+                if (p.innerText == t.track_title + " | " + t.album_title) {
+                  p.innerText = t.track_title + " | " + t.album_title + " | "  + t.artist_name + " | " + t.track_duration;
+                }
+                else {
+                  p.innerText = t.track_title + " | " + t.album_title;
+                }
               }
 
               p.style.display = "none";
               a.style.display = "none";
               button.style.display = "none";
+
+              p.setAttribute('className', 'hiding');
+              a.setAttribute('className', 'hiding');
+              button.setAttribute('className', 'hiding');
 
               li.appendChild(p);
               a.appendChild(input);
@@ -131,7 +141,14 @@ function getAllLists() {
 
             button.onclick = function () {
               for (let j = 0; j < li.children.length; j++){
-                li.children[j].style.display = "";
+                if (li.children[j].getAttribute('className') == 'hiding') {
+                  if (li.children[j].style.display == "") {
+                    li.children[j].style.display = "none";
+                  }
+                  else {
+                    li.children[j].style.display = "";
+                  }
+                }
               }
             }
 
@@ -397,6 +414,7 @@ function getMyLists(email){
           let desc = document.createElement('p');
           desc.innerText = "Description: \n" + data[i].description;
           desc.style.display = "none";
+          desc.setAttribute('className', 'hiding');
 
           li.appendChild(p);
           li.appendChild(button);
@@ -419,12 +437,21 @@ function getMyLists(email){
             let button = document.createElement('button');
             button.innerText = "Expand";
             button.onclick = function () {
-              p.innerText = t.track_title + " | " + t.album_title + " | "  + t.artist_name + " | " + t.track_duration;
+              if (p.innerText == t.track_title + " | " + t.album_title) {
+                p.innerText = t.track_title + " | " + t.album_title + " | "  + t.artist_name + " | " + t.track_duration;
+              }
+              else {
+                p.innerText = t.track_title + " | " + t.album_title;
+              }
             }
 
             p.style.display = "none";
             a.style.display = "none";
             button.style.display = "none";
+
+            p.setAttribute('className', 'hiding');
+            a.setAttribute('className', 'hiding');
+            button.setAttribute('className', 'hiding');
 
             li.appendChild(p);
             a.appendChild(input);
@@ -434,7 +461,14 @@ function getMyLists(email){
 
           button.onclick = function () {
             for (let j = 0; j < li.children.length; j++){
-              li.children[j].style.display = "";
+              if (li.children[j].getAttribute('className') == 'hiding') {
+                if (li.children[j].style.display == "") {
+                  li.children[j].style.display = "none";
+                }
+                else {
+                  li.children[j].style.display = "";
+                }
+              }
             }
           }
 
