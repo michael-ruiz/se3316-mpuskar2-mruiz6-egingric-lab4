@@ -393,6 +393,109 @@ app.get('/lists/all/lists', (req, res) => {
     res.send(results);
 });
 
+// Save review to a list
+app.put('/reviews/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    const newReview = req.body;
+    console.log(`PUT request for ${req.url}`);
+
+    let results = db.findIndex(i => i.name === String(name));
+    if (results < 0) {
+        res.status(404).send(`List ${name} does not exist!`);
+    }
+    else {
+        let reviews = db[results].reviews;
+        for (i = 0; i < reviews.length; i++) {
+            let results = reviews.find(j => j.creator === String(newReview.creator));
+            if (results) {
+                res.status(404).send(`Review from user ${newReview.creator} already exists!`);
+                return;
+            }
+        }
+
+        console.log("Modify ", name);
+        reviews.push(newReview);
+
+        fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
+            if (err) throw err;
+            console.log("Done writing to file");
+        });
+
+        res.send(newReview);
+    }
+});
+
+// Replace existing review in a list
+app.post('/reviews/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    const newReview = req.body;
+    console.log(`POST request for ${req.url}`);
+
+    let results = db.findIndex(i => i.name === String(name));
+    if (results < 0) {
+        res.status(404).send(`List ${name} does not exist!`);
+    }
+    else {
+        let reviews = db[results].reviews;
+        if (reviews.length < 1) {
+            res.status(404).send(`Review from user ${newReview.creator} does not exist!`);
+            return;
+        }
+
+        for (i = 0; i < reviews.length; i++) {
+            let results = reviews.find(j => j.creator === String(newReview.creator));
+            if (!results) {
+                res.status(404).send(`Review from user ${newReview.creator} does not exist!`);
+                return;
+            }
+        }
+
+        let r = reviews.findIndex(j => j.creator === String(newReview.creator));
+
+        console.log("Modify ", name);
+        reviews[r] = newReview;
+
+        fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
+            if (err) throw err;
+            console.log("Done writing to file");
+        });
+
+        res.send(newReview);
+    }
+});
+
+// Delete a review for a list
+app.delete('/reviews/:list_name', (req, res) => {
+    const name = req.params.list_name;
+    const newReview = req.body;
+    console.log(`DELETE request for ${req.url}`);
+
+    let results = db.findIndex(i => i.name === String(name));
+    if (results < 0) {
+        res.status(404).send(`List ${name} does not exist!`);
+    }
+    else {
+        let reviews = db[results].reviews;
+        let r = reviews.findIndex(j => j.creator === String(newReview.creator));
+
+        if (r < 0) {
+            res.status(404).send(`Review from user ${newReview.creator} does not exist!`);
+            return;
+        }
+        else {
+            console.log("Delete ", name, " review from ", newReview.creator);
+            reviews.splice(r, 1); // Remove the item
+        }
+
+        fs.writeFile("./server/data/lists.json", JSON.stringify(db), (err) => {
+            if (err) throw err;
+            console.log("Done writing to file");
+        });
+
+        res.send(`Review from ${newReview.creator} in ${name} deleted!`);
+    }
+});
+
 app.get('/user/attributes/all', (req, res) => {
     res.send(userAtt);
 });
