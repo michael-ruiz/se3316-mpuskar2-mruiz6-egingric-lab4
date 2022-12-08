@@ -10,33 +10,46 @@ const MiniProfile = () => {
   }
 
   async function checkD(){
-    let t = [];
-    await fetch('/user/attributes/all').then(e => e.json()).then(e => t = e.deactivated);
+    if (user != undefined){
+      let t = [];
+      await fetch('/user/attributes/all').then(e => e.json()).then(e => t = e.deactivated);
 
-    if (t.includes(user.email)){
-      alert('Your Account is Deactivated - Contact Site Admin');
-      logout({returnTo: window.location.origin});
+      if (t.includes(user.email)){
+        alert('Your Account is Deactivated - Contact Site Admin');
+        logout({returnTo: window.location.origin});
+      }
+    }
+  }
+
+  function isVerified(){
+    if (user != undefined){
+      if (!user.isVerified){
+        alert('Please Verify email');
+      }
     }
   }
 
   async function isAdmin(){
-    let temp = [];
-    await fetch('/user/attributes/all').then(e => e.json()).then(e => temp = e.admin);
+    if (user != undefined) {
+      let temp = [];
+      await fetch('/user/attributes/all').then(e => e.json()).then(e => temp = e.admin);
 
-    if (temp.includes(user.email)){
-      document.getElementById('admin').className = '';
-    }
-    else{
-      document.getElementById('admin').className = 'hidden';
+      if (temp.includes(user.email)){
+        document.getElementById('admin').className = '';
+      }
+      else{
+        document.getElementById('admin').className = 'hidden';
+      }
     }
   }
+  isVerified();
   isAdmin();
   checkD();
 
   return (
     isAuthenticated && (
       <div>
-        <Link to="/profile"><p>{user.email}</p></Link>
+        <Link to="/profile"><p>{user.nickname}</p></Link>
         <div id='admin'>ADMIN</div>
       </div>
     )

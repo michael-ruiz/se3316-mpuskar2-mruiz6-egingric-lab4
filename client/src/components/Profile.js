@@ -44,8 +44,8 @@ const Profile = () => {
   return (
     isAuthenticated && (
       <div className="profile" onLoad={check}>
-        <img src={user.picture} alt={user.name}/>
-        <p>{user.email}</p>
+        <img src={user.picture} alt={user.nickname}/>
+        <p>{user.nickname}</p>
         <div id="adminProfile">
         <h3>Add Admin Account</h3>
           <input id="inputAdmin" type="text" placeholder="email"/>
