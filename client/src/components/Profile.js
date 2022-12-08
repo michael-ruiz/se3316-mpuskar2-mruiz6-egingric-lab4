@@ -41,11 +41,22 @@ const Profile = () => {
     alert('Account Deactivated');
   }
 
+  async function addV(){
+    let newV = user.email; 
+
+    await fetch(`/user/attributes/verified/${newV}`, {
+      method: 'PUT'});
+
+    alert('Account Verified');
+  }
+
   return (
     isAuthenticated && (
       <div className="profile" onLoad={check}>
         <img src={user.picture} alt={user.nickname}/>
         <p>{user.nickname}</p>
+        <h3>Verify Account</h3>
+        <button onClick={addV}>Yes</button>
         <div id="adminProfile">
         <h3>Add Admin Account</h3>
           <input id="inputAdmin" type="text" placeholder="email"/>
