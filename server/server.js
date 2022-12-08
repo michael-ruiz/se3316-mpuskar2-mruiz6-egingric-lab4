@@ -245,6 +245,17 @@ app.put('/lists/:list_name', (req, res) => {
     newList.name = String(name);
     newList.tracksDet = [];
 
+    let count = 0;
+    for (i = 0; i < db.length; i++){
+        if (db[i].creator === newList.creator) {
+            count++;
+        }
+    }
+
+    if (count >= 20) {
+        res.status(404).send(`User ${newList.creator} has 20 playlists!`);
+    }
+
     let results = db.findIndex(i => i.name === String(name));
     if (results < 0) {
 
