@@ -13,7 +13,7 @@ export default function ReviewsSection() {
               <input id="listNameReview" type="text" placeholder="List Name"/>
               <input id="rating" type="text" placeholder="Rating"/>
               <input id="comment" type="text" placeholder="Comment"/>
-              <button onClick={() => createReview(user.email)} id="createNewReview">Create Review</button>
+              <button onClick={() => createReview(user.nickname)} id="createNewReview">Create Review</button>
               <p>Input no more than 20 characters for name and numbers separated by commas for IDs</p>
         </div>
         <div className={user == undefined ? "hidden" : ""}>
@@ -21,18 +21,18 @@ export default function ReviewsSection() {
               <input id="listNameReview2" type="text" placeholder="List Name"/>
               <input id="rating2" type="text" placeholder="Rating"/>
               <input id="comment2" type="text" placeholder="Comment"/>
-              <button onClick={() => updateReview(user.email)} id="updateReview">Update Review</button>
+              <button onClick={() => updateReview(user.nickname)} id="updateReview">Update Review</button>
               <p>Input no more than 20 characters for name and numbers separated by commas for IDs</p>
         </div>
         <div className={user == undefined ? "hidden" : ""}>
               <h3>Delete Review</h3>
               <input id="listNameReview3" type="text" placeholder="List Name"/>
-              <button onClick={() => deleteReview(user.email)} id="deleteReview">Delete Review</button>
+              <button onClick={() => deleteReview(user.nickname)} id="deleteReview">Delete Review</button>
               <p>Input no more than 20 characters for name</p>
         </div>
         <div className={user == undefined ? "hidden" : ""}>
           <h2>My Reviews</h2>
-          <button onClick={() => getMyReviews(user.email)}>View My Reviews</button>
+          <button onClick={() => getMyReviews(user.nickname)}>View My Reviews</button>
         </div>
         <div className={user == undefined ? "hidden" : ""}>
           <ul id="userReviewList">
@@ -43,7 +43,7 @@ export default function ReviewsSection() {
     )
   }
 
-function createReview(email) {
+function createReview(username) {
     let listName = document.getElementById('listNameReview');
     let filterName = listName.value;
     let rating = document.getElementById('rating');
@@ -78,7 +78,7 @@ function createReview(email) {
     let newReview = {
         rating: ratingTxt,
         comment: commentTxt,
-        creator: email,
+        creator: username,
         visibility: "visible",
         lastChanged: d1
     }
@@ -105,7 +105,7 @@ function createReview(email) {
     }
   }
 
-async function updateReview(email) {
+async function updateReview(username) {
     let listName = document.getElementById('listNameReview2');
     let filterName = listName.value;
     let rating = document.getElementById('rating2');
@@ -142,7 +142,7 @@ async function updateReview(email) {
     let newReview = {
         rating: ratingTxt,
         comment: commentTxt,
-        creator: email,
+        creator: username,
         visibility: "visible",
         lastChanged: d1
     }
@@ -157,7 +157,7 @@ async function updateReview(email) {
     )
     .catch(err => console.log('Failed to find list of that name'))
 
-    if (email === creator){
+    if (username === creator){
         fetch(path, {
             method: 'POST',
             headers: {'Content-type': 'application/json'},
@@ -178,7 +178,7 @@ async function updateReview(email) {
     }
 }
 
-async function deleteReview(email) {
+async function deleteReview(username) {
     let listName = document.getElementById('listNameReview3');
     let filterName = listName.value;
     let creator;
@@ -205,7 +205,7 @@ async function deleteReview(email) {
     )
     .catch(err => console.log('Failed to find list of that name'))
   
-    if (email === creator){
+    if (username === creator){
       fetch(path, {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'},
@@ -230,8 +230,33 @@ async function deleteReview(email) {
     }
 }
 
-function getMyReviews(email) {
+function getMyReviews(username) {
 
+    while (document.getElementById("userReviewList").firstChild != document.getElementById("userReviewList").lastChild){
+      document.getElementById("userReviewList").removeChild(document.getElementById("userReviewList").lastChild);
+    }
+  
+    fetch('/lists/all/lists')
+    .then(res => res.json()
+    .then(data => {
+        console.log(data);
+  
+        for (let i = 0; i < data.length; i++){
+          if (data[i].creator === username){
+            for (let j = 0; j < data[i].reviews.length; j++){
+                let review = data[i].reviews[j];
+                let list = document.getElementById('userReviewList');
+                let li = document.createElement('li');
+                let p = document.createElement('p');
+                p.innerText = data[i].name + " | " + review.rating + " | " + review.comment;
+
+                li.appendChild(p);
+                list.appendChild(li);
+            }
+          }
+      }
+    })
+    )
 }
 
 function containsLetter(str) {

@@ -310,6 +310,7 @@ app.post('/lists/:list_name', (req, res) => {
         }
 
         console.log("Modify ", name);
+        //newList.avgRating = db[results].avgRating;
         newList.reviews = db[results].reviews;
         db[results] = newList;
 
@@ -386,6 +387,17 @@ app.get('/lists/all/lists', (req, res) => {
             runtimeStr = `${Math.floor(runtime/60)}:${runtime%60}`;
         }
 
+        let avgRating = 0;
+        if (db[i].reviews) {
+            let sumRating = 0;
+            if (db[i].reviews.length > 0) {
+                for (k = 0; k < db[i].reviews.length; k++) {
+                    sumRating += parseFloat(db[i].reviews[k].rating);
+                }
+                avgRating = sumRating / db[i].reviews.length;
+            }
+        }
+
         let obj = {
             "name": db[i].name,
             "tracks": trackArray,
@@ -393,10 +405,11 @@ app.get('/lists/all/lists', (req, res) => {
             "length": trackArray.length,
             "creator": db[i].creator,
             "visibility": db[i].visibility,
-            "avgRating": db[i].avgRating,
+            "avgRating": avgRating,
             "lastModified": db[i].lastModified,
             "runtime": runtimeStr,
-            "tracksDet": db[i].tracksDet
+            "tracksDet": db[i].tracksDet,
+            "reviews": db[i].reviews
         }
         results.push(obj);
     }

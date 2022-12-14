@@ -5,7 +5,7 @@ export default function () {
     <div>
         <h2> About </h2>
         <p className="about">
-        Music app that allows you to search for music make playlists and add reviews to them
+        Music app that allows you to search for music, make playlists, and add reviews to them.
         </p>
     </div>
   )

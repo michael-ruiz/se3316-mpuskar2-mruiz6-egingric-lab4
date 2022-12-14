@@ -31,7 +31,7 @@ export function ListsSectionLogin() {
             <input id="desc" type="text" placeholder="Description (Optional)"/>
             <input type="checkbox" id="vis" name="vis"/>
             <label htmlFor="vis">Public?</label><br/>
-            <button onClick={() => createList(user.email)} id="createNewList">Create List</button>
+            <button onClick={() => createList(user.nickname)} id="createNewList">Create List</button>
             <p>Input no more than 20 characters for name and numbers separated by commas for IDs</p>
       </div>
       <div className={user == undefined ? "hidden" : ""}>
@@ -41,18 +41,18 @@ export function ListsSectionLogin() {
             <input id="desc2" type="text" placeholder="Description (Optional)"/>
             <input type="checkbox" id="vis2" name="vis2"/>
             <label htmlFor="vis2">Public?</label><br/>
-            <button onClick={() => updateList(user.email)} id="updateList">Update List</button>
+            <button onClick={() => updateList(user.nickname)} id="updateList">Update List</button>
             <p>Input no more than 20 characters for name and numbers separated by commas for IDs</p>
       </div>
       <div className={user == undefined ? "hidden" : ""}>
             <h3>Delete List</h3>
             <input id="listName3" type="text" placeholder="List Name"/>
-            <button onClick={() => deleteList(user.email)} id="deleteList">Delete List</button>
+            <button onClick={() => deleteList(user.nickname)} id="deleteList">Delete List</button>
             <p>Input no more than 20 characters for name</p>
       </div>
       <div className={user == undefined ? "hidden" : ""}>
         <h2>My Lists</h2>
-        <button onClick={() => getMyLists(user.email)}>View My Lists</button>
+        <button onClick={() => getMyLists(user.nickname)}>View My Lists</button>
       </div>
       <div className={user == undefined ? "hidden" : ""}>
         <ul id="userListList">
@@ -96,9 +96,19 @@ function getAllLists() {
             desc.style.display = "none";
             desc.setAttribute('className', 'hiding');
 
+            let reviews = document.createElement('p');
+            reviews.innerText = "Reviews: ";
+            for (let j = 0; j < data[i].reviews.length; j++){
+              let r = data[i].reviews[j];
+              reviews.innerText += `\n${r.rating} | ${r.comment} | ${r.creator}\n`;
+            }
+            reviews.style.display = "none";
+            reviews.setAttribute('className', 'hiding');
+
             li.appendChild(p);
             li.appendChild(button);
             li.appendChild(desc);
+            li.appendChild(reviews);
 
             data[i].tracksDet.forEach(t => {
                         
@@ -171,7 +181,7 @@ function compareDate(a, b){
   return 0;
 }
 
-function createList(email) {
+function createList(username) {
   let listName = document.getElementById('listName');
   let filterName = listName.value;
   let trackIds = document.getElementById('trackIds');
@@ -215,9 +225,8 @@ function createList(email) {
   let newList = {
       tracks: trackArray,
       description: descTxt,
-      creator: email,
+      creator: username,
       visibility: visTxt,
-      avgRating: "",
       lastModified: d1,
       reviews: []
   }
@@ -242,7 +251,7 @@ function createList(email) {
   .catch()
 }
 
-async function updateList(email) {
+async function updateList(username) {
   let listName = document.getElementById('listName2');
   let filterName = listName.value;
   let trackIds = document.getElementById('trackIds2');
@@ -287,9 +296,8 @@ async function updateList(email) {
   let newList = {
     tracks: trackArray,
     description: descTxt,
-    creator: email,
+    creator: username,
     visibility: visTxt,
-    avgRating: "",
     lastModified: d1
 }
 
@@ -304,7 +312,7 @@ async function updateList(email) {
   )
   .catch(err => console.log('Failed to find list of that name'))
 
-  if (email === creator){
+  if (username === creator){
     fetch(path, {
       method: 'POST',
       headers: {'Content-type': 'application/json'},
@@ -328,7 +336,7 @@ async function updateList(email) {
   }
 }
 
-async function deleteList(email) {
+async function deleteList(username) {
   let listName = document.getElementById('listName3');
   let filterName = listName.value;
   let creator;
@@ -355,7 +363,7 @@ async function deleteList(email) {
   )
   .catch(err => console.log('Failed to find list of that name'))
 
-  if (email === creator){
+  if (username === creator){
     fetch(path, {
       method: 'DELETE',
       headers: {'Content-type': 'application/json'},
@@ -384,7 +392,7 @@ function containsLetter(str) {
   return ((/[a-z]/.test(str)) || (/[A-Z]/.test(str)));
 }
 
-function getMyLists(email){
+function getMyLists(username){
   let n = 20;
 
   while (document.getElementById("userListList").firstChild != document.getElementById("userListList").lastChild){
@@ -400,13 +408,13 @@ function getMyLists(email){
         if (n < 1){
           break;
         }
-        if (data[i].creator === email){
+        if (data[i].creator === username){
           n--;
 
           let list = document.getElementById('userListList');
           let li = document.createElement('li');
           let p = document.createElement('p');
-          p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime + " | " + data[i].creator + " | " + data[i].avgRating;
+          p.innerText = data[i].name + " | " + data[i].length + " | " + data[i].runtime;
 
           let button = document.createElement('button');
           button.innerText = "Expand";
